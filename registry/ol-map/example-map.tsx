@@ -9,6 +9,8 @@ import VectorSource from "ol/source/Vector";
 import { Fill, Stroke, Style } from "ol/style";
 import { Map, MapLayer, MapTooltip } from "./components/map";
 import CircleStyle from "ol/style/Circle";
+import { useEffect, useRef } from "react";
+import { StyleLike } from "ol/style/Style";
 
 // Example usage with custom data
 export const ExampleMap = () => {
@@ -32,27 +34,35 @@ export const ExampleMap = () => {
     }),
   ];
 
-  // set style to be a red circle
-  const pointStyle = new Style({
-    image: new CircleStyle({
-      radius: 5,
-      fill: new Fill({ color: "red" }),
-      stroke: new Stroke({ color: "black", width: 1 }),
-    }),
-  });
+  const pointStyleRef = useRef<StyleLike | undefined>(undefined);
+  const lineStringStyleRef = useRef<StyleLike | undefined>(undefined);
 
-  const lineStringStyle = new Style({
-    stroke: new Stroke({
-      color: `hsl(${window
-        .getComputedStyle(document.documentElement)
-        .getPropertyValue("--chart-1")})`,
-      width: 2,
-    }),
-  });
+  useEffect(() => {
+    const pointStyle = new Style({
+      image: new CircleStyle({
+        radius: 5,
+        fill: new Fill({ color: "red" }),
+        stroke: new Stroke({ color: "black", width: 1 }),
+      }),
+    });
 
-  features.forEach((feature) => feature.setStyle(pointStyle));
+    const lineStringStyle = new Style({
+      stroke: new Stroke({
+        color: `hsl(${window
+          .getComputedStyle(document.documentElement)
+          .getPropertyValue("--chart-1")})`,
+        width: 2,
+      }),
+    });
 
-  lineStringFeatures.forEach((feature) => feature.setStyle(lineStringStyle));
+    pointStyleRef.current = pointStyle;
+    lineStringStyleRef.current = lineStringStyle;
+  }, []);
+
+  features.forEach((feature) => feature.setStyle(pointStyleRef.current));
+  lineStringFeatures.forEach((feature) =>
+    feature.setStyle(lineStringStyleRef.current)
+  );
 
   // Vector layer for custom points
   const vectorLayer = new VectorLayer({

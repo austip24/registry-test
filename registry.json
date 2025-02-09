@@ -35,6 +35,7 @@
       "type": "registry:component",
       "title": "OpenLayers Map",
       "description": "Component that makes use of OpenLayers API",
+      "dependencies": ["zustand", "ol"],
       "files": [
         {
           "path": "registry/ol-map/components/map.tsx",
