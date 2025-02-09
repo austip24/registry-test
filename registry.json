@@ -31,6 +31,22 @@
       ]
     },
     {
+      "name": "ol-map",
+      "type": "registry:component",
+      "title": "OpenLayers Map",
+      "description": "Component that makes use of OpenLayers API",
+      "files": [
+        {
+          "path": "registry/ol-map/components/map.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/ol-map/example-map.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "complex-component",
       "type": "registry:component",
       "title": "Complex Component",
