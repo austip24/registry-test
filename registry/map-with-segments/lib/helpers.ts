@@ -1,6 +1,4 @@
-import { Collection, Feature, View } from "ol";
-import { createEmpty, extend, getCenter } from "ol/extent";
-import { FeatureLike } from "ol/Feature";
+import { Collection, Feature } from "ol";
 import { Geometry } from "ol/geom";
 import VectorLayer from "ol/layer/Vector";
 import VectorImageLayer from "ol/layer/VectorImage";
@@ -36,41 +34,4 @@ export const createDataLayer = <
         });
 
   return layer;
-};
-
-/**
- * Creates a view for the map that is centered on all provided features
- * @param features
- * @returns {View} The view for the map
- */
-export const createCenteredView = (features: FeatureLike[]) => {
-  if (features.length === 0) {
-    return new View({
-      center: [0, 0],
-      zoom: 2,
-    });
-  }
-
-  const extent = createEmpty();
-
-  features.forEach((feature) => {
-    const geom = feature.getGeometry();
-    if (geom) {
-      extend(extent, geom.getExtent());
-    }
-  });
-
-  const center = getCenter(extent);
-
-  const view = new View({
-    center,
-    extent,
-  });
-
-  view.fit(extent, {
-    duration: 1000,
-    padding: [50, 50, 50, 50],
-  });
-
-  return view;
 };
