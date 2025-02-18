@@ -9,7 +9,7 @@
     "ol"
   ],
   "registryDependencies": [
-    "ol-map"
+    "http://localhost:3000/r/ol-map.json"
   ],
   "files": [
     {

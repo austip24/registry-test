@@ -82,7 +82,9 @@
       "type": "registry:component",
       "title": "Map With Segments",
       "description": "A map that contains colored road segments",
-      "registryDependencies": ["ol-map"],
+      "registryDependencies": [
+        "http://localhost:3000/r/ol-map.json"
+      ],
       "dependencies": ["zustand", "ol"],
       "files": [
         {
