@@ -90,7 +90,7 @@
         {
           "path": "registry/map-with-segments/page.tsx",
           "type": "registry:page",
-          "target": "app/pokemon/page.tsx"
+          "target": "app/map-with-segments/page.tsx"
         },
         {
           "path": "registry/map-with-segments/components/map-with-segments.tsx",

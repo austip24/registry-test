@@ -1,12 +1,12 @@
 "use client";
 
-import { RoadFeature, RoadProperties } from "../lib/roads";
+import { RoadFeature, RoadProperties } from "@/registry/map-with-segments/lib/roads";
 import { Stroke, Style } from "ol/style";
 import { Map, MapLayer, MapTooltip } from "@/registry/ol-map/components/map";
 import { GeoJSON } from "ol/format";
 import TileLayer from "ol/layer/Tile";
 import { XYZ } from "ol/source";
-import { createDataLayer } from "../lib/helpers";
+import { createDataLayer } from "@/registry/map-with-segments/lib/helpers";
 import { Geometry } from "ol/geom";
 import { View } from "ol";
 import { useCallback, useEffect, useMemo } from "react";

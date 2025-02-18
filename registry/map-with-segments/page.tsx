@@ -1,6 +1,6 @@
-import { MapWithSegments } from "./components/map-with-segments";
-import { getAccidents } from "./lib/accidents";
-import { getRoads } from "./lib/roads";
+import { MapWithSegments } from "@/registry/map-with-segments/components/map-with-segments";
+import { getAccidents } from "@/registry/map-with-segments/lib/accidents";
+import { getRoads } from "@/registry/map-with-segments/lib/roads";
 
 const Page = async () => {
   const [roads, accidents] = await Promise.all([getRoads(), getAccidents()]);
