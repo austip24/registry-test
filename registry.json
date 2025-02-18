@@ -83,7 +83,7 @@
       "title": "Map With Segments",
       "description": "A map that contains colored road segments",
       "registryDependencies": [
-        "ol-map"
+        "https://registry-test-taupe.vercel.app/r/ol-map.json"
       ],
       "dependencies": ["zustand", "ol"],
       "files": [
