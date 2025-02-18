@@ -76,6 +76,37 @@
           "type": "registry:hook"
         }
       ]
+    },
+    {
+      "name": "map-with-segments",
+      "type": "registry:component",
+      "title": "Map With Segments",
+      "description": "A map that contains colored road segments",
+      "registryDependencies": ["ol-map"],
+      "dependencies": ["zustand", "ol"],
+      "files": [
+        {
+          "path": "registry/map-with-segments/page.tsx",
+          "type": "registry:page",
+          "target": "app/pokemon/page.tsx"
+        },
+        {
+          "path": "registry/map-with-segments/components/map-with-segments.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/map-with-segments/lib/accidents.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/map-with-segments/lib/helpers.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "registry/map-with-segments/lib/roads.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

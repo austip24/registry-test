@@ -1,0 +1,42 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "map-with-segments",
+  "type": "registry:component",
+  "title": "Map With Segments",
+  "description": "A map that contains colored road segments",
+  "dependencies": [
+    "zustand",
+    "ol"
+  ],
+  "registryDependencies": [
+    "ol-map"
+  ],
+  "files": [
+    {
+      "path": "registry/map-with-segments/page.tsx",
+      "content": "import { MapWithSegments } from \"./components/map-with-segments\";\r\nimport { getAccidents } from \"./lib/accidents\";\r\nimport { getRoads } from \"./lib/roads\";\r\n\r\nconst Page = async () => {\r\n  const [roads, accidents] = await Promise.all([getRoads(), getAccidents()]);\r\n\r\n  console.log(\"accidents\", accidents);\r\n\r\n  return (\r\n    <div className=\"grow w-full h-full\">\r\n      <MapWithSegments roads={roads} accidents={[]} />\r\n    </div>\r\n  );\r\n};\r\n\r\nexport default Page;\r\n",
+      "type": "registry:page",
+      "target": "app/pokemon/page.tsx"
+    },
+    {
+      "path": "registry/map-with-segments/components/map-with-segments.tsx",
+      "content": "\"use client\";\r\n\r\nimport { RoadFeature, RoadProperties } from \"../lib/roads\";\r\nimport { Stroke, Style } from \"ol/style\";\r\nimport { Map, MapLayer, MapTooltip } from \"@/registry/ol-map/components/map\";\r\nimport { GeoJSON } from \"ol/format\";\r\nimport TileLayer from \"ol/layer/Tile\";\r\nimport { XYZ } from \"ol/source\";\r\nimport { createDataLayer } from \"../lib/helpers\";\r\nimport { Geometry } from \"ol/geom\";\r\nimport { View } from \"ol\";\r\nimport { useCallback, useEffect, useMemo } from \"react\";\r\n\r\ntype MapWithSegmentsProps = {\r\n  accidents: unknown[];\r\n  roads: RoadFeature[];\r\n};\r\n\r\n/**\r\n * Leverage OpenLayers API to format data. This makes sure that openlayers knows how to process the data\r\n * @param roads Unformatted json data\r\n * @returns {RoadFeature[]} Array of OL features\r\n */\r\nconst formatRoads = (roads: RoadFeature[]) => {\r\n  const format = new GeoJSON();\r\n  const features = format.readFeatures(roads, {\r\n    featureProjection: \"EPSG:3857\", // Web Mercator coordinates\r\n  });\r\n  return features as RoadFeature[];\r\n};\r\n\r\nexport const MapWithSegments: React.FC<MapWithSegmentsProps> = ({\r\n  accidents,\r\n  roads,\r\n}) => {\r\n  console.log(accidents);\r\n  console.log(roads);\r\n\r\n  const tileLayer = new TileLayer({\r\n    source: new XYZ({\r\n      url: \"https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoid2l6enk4NSIsImEiOiJjbHJ5NGx6dHQxNjZsMmpsejN2OXlzZjR6In0.kp6vK9Gb_gtFXSGGZ63CRw\",\r\n    }),\r\n  });\r\n\r\n  const olRoads = formatRoads(roads);\r\n\r\n  const filteredRoads = olRoads.filter((road) => {\r\n    const properties = road.getProperties() as RoadProperties;\r\n\r\n    // Apply any filters to roads here. Return true if you want to keep the feature.\r\n    // In this case, we are only keeping roads that are in Arizona (AZ)\r\n    const { state } = properties;\r\n    return state === \"AZ\";\r\n  });\r\n\r\n  const roadsLayer = createDataLayer(filteredRoads, \"image\", (feature) => {\r\n    const properties = feature.getProperties() as RoadProperties;\r\n\r\n    const { type } = properties;\r\n\r\n    const determineStrokeColor = (type: string) => {\r\n      switch (type) {\r\n        case \"SR\":\r\n          return \"#FF0000\";\r\n        case \"US\":\r\n          return \"#00AA00\";\r\n        case \"I\":\r\n          return \"#0000FF\";\r\n        default:\r\n          return \"#000000\";\r\n      }\r\n    };\r\n\r\n    return new Style({\r\n      stroke: new Stroke({\r\n        color: determineStrokeColor(type),\r\n        width: 2,\r\n      }),\r\n    });\r\n  });\r\n\r\n  const view = useMemo(\r\n    () =>\r\n      new View({\r\n        center: [0, 0],\r\n        zoom: 2,\r\n      }),\r\n    []\r\n  );\r\n\r\n  const fitView = useCallback(() => {\r\n    view.fit(roadsLayer.getSource()?.getExtent() ?? [0, 0, 0, 0], {\r\n      duration: 1500,\r\n      easing: (t) => t * (2 - t),\r\n      padding: [10, 10, 10, 10],\r\n    });\r\n  }, [roadsLayer, view]);\r\n\r\n  // ensures that the map view is always fit to the data initially\r\n  useEffect(() => {\r\n    fitView();\r\n  }, [fitView]);\r\n\r\n  return (\r\n    <Map\r\n      options={{\r\n        view,\r\n      }}\r\n    >\r\n      <MapTooltip\r\n        render={(feature) => {\r\n          const properties = feature.getProperties() as RoadProperties & {\r\n            geometry: Geometry;\r\n          };\r\n\r\n          // Note that geometry is a valid key, which contains represents the GeoJSON qualities of the feature\r\n          // Usually, we aren't too interested in this but it is useful to know that it exists\r\n          return Object.entries(properties).map(\r\n            ([key, value], idx) =>\r\n              key !== \"geometry\" && (\r\n                <div key={`${key}-${idx}-${value}`}>\r\n                  {key}: {`${value}`}\r\n                </div>\r\n              )\r\n          );\r\n        }}\r\n      />\r\n      <MapLayer layer={tileLayer} />\r\n      <MapLayer layer={roadsLayer} />\r\n    </Map>\r\n  );\r\n};\r\n",
+      "type": "registry:component"
+    },
+    {
+      "path": "registry/map-with-segments/lib/accidents.ts",
+      "content": "export type Accident = {\r\n  state: string;\r\n  type: string;\r\n  id: string;\r\n  year: number;\r\n  incidents: number;\r\n  fatalities: number;\r\n};\r\n\r\nexport const getAccidents = async () => {\r\n\r\n};\r\n",
+      "type": "registry:lib"
+    },
+    {
+      "path": "registry/map-with-segments/lib/helpers.ts",
+      "content": "import { Collection, Feature } from \"ol\";\r\nimport { Geometry } from \"ol/geom\";\r\nimport VectorLayer from \"ol/layer/Vector\";\r\nimport VectorImageLayer from \"ol/layer/VectorImage\";\r\nimport VectorSource from \"ol/source/Vector\";\r\nimport { StyleFunction } from \"ol/style/Style\";\r\n\r\n/**\r\n * Creates a layer for the map using data, layer type, and style.\r\n * @param data - The data to be used for the layer.\r\n * @param type - The type of the layer, either \"vector\" or \"image\". \"image\" is better for large datasets (>10,000 features).\r\n * @param style - A function that returns the styling of each feature.\r\n */\r\nexport const createDataLayer = <\r\n  T extends Feature<Geometry>[] | Collection<Feature<Geometry>> | undefined\r\n>(\r\n  data: T,\r\n  type: \"vector\" | \"image\",\r\n  style: StyleFunction\r\n) => {\r\n  const source = new VectorSource({\r\n    features: data,\r\n  });\r\n\r\n  const layer =\r\n    type === \"image\"\r\n      ? new VectorImageLayer({\r\n          source,\r\n          style,\r\n        })\r\n      : new VectorLayer({\r\n          source,\r\n          style,\r\n        });\r\n\r\n  return layer;\r\n};\r\n",
+      "type": "registry:lib"
+    },
+    {
+      "path": "registry/map-with-segments/lib/roads.ts",
+      "content": "import { Feature } from \"ol\";\r\nimport { Geometry } from \"ol/geom\";\r\n\r\n/** Type for property attribute in feature.  */\r\nexport type RoadProperties = {\r\n  state: string;\r\n  type: string;\r\n  id: string;\r\n  name: string;\r\n  length: number;\r\n};\r\n\r\nexport type RoadFeature = Feature<Geometry>;\r\n\r\n/**\r\n * Fetches roads data from a remote source\r\n * @returns {RoadFeature[]} Array of road features\r\n */\r\nexport const getRoads = async () => {\r\n  try {\r\n    const res = await fetch(\r\n      \"https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/highway/roads.json\"\r\n    );\r\n\r\n    if (!res.ok) {\r\n      throw new Error(\"Failed to fetch roads\");\r\n    }\r\n\r\n    const geoJsonData = await res.json();\r\n    return geoJsonData as RoadFeature[];\r\n  } catch (error) {\r\n    console.log(error);\r\n    return [];\r\n  }\r\n};\r\n",
+      "type": "registry:lib"
+    }
+  ]
+}
