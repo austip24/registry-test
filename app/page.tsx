@@ -2,7 +2,6 @@ import * as React from "react";
 import { OpenInV0Button } from "@/components/open-in-v0-button";
 import { HelloWorld } from "@/registry/hello-world/hello-world";
 import { ExampleForm } from "@/registry/example-form/example-form";
-import { ExampleMap } from "@/registry/ol-map/example-map";
 import PokemonPage from "@/registry/complex-component/page";
 import { ExampleComboboxAccordion } from "@/registry/combobox-accordion/example";
 import MapWithSegmentsPage from "@/registry/map-with-segments/page";
@@ -53,18 +52,6 @@ export default function Home() {
           </div>
           <div className="flex items-center justify-center min-h-[400px] relative">
             <PokemonPage />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-4 border rounded-lg p-4 min-h-[450px] relative">
-          <div className="shrink flex items-center justify-between">
-            <h2 className="text-sm text-muted-foreground sm:pl-3">
-              Map template
-            </h2>
-            <OpenInV0Button name="complex-component" className="w-fit" />
-          </div>
-          <div className="grow relative">
-            <ExampleMap />
           </div>
         </div>
 
