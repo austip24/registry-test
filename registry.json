@@ -38,11 +38,7 @@
       "dependencies": ["zustand", "ol"],
       "files": [
         {
-          "path": "registry/ol-map/components/map.tsx",
-          "type": "registry:component"
-        },
-        {
-          "path": "registry/ol-map/example-map.tsx",
+          "path": "registry/ol-map/map.tsx",
           "type": "registry:component"
         }
       ]
