@@ -2,7 +2,7 @@
 
 import { RoadFeature, RoadProperties } from "@/registry/map-with-segments/lib/roads";
 import { Stroke, Style } from "ol/style";
-import { Map, MapLayer, MapTooltip } from "@/registry/ol-map/components/map";
+import { Map, MapLayer, MapTooltip } from "@/registry/ol-map/map";
 import { GeoJSON } from "ol/format";
 import TileLayer from "ol/layer/Tile";
 import { XYZ } from "ol/source";
