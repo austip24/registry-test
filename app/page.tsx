@@ -4,9 +4,7 @@ import { HelloWorld } from "@/registry/hello-world/hello-world";
 import { ExampleForm } from "@/registry/example-form/example-form";
 import PokemonPage from "@/registry/complex-component/page";
 import { ExampleComboboxAccordion } from "@/registry/combobox-accordion/example";
-// import MapWithSegmentsPage from "@/registry/map-with-segments/page";
 import MapTimelinePage from "@/registry/map-timeline/page";
-import { ClaudeExample } from "@/registry/test-claude/example";
 import { ExampleSlider } from "@/registry/complex-slider/example-slider";
 
 // This page displays items from the custom registry.
