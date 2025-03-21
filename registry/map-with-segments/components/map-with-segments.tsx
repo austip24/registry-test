@@ -1,6 +1,9 @@
 "use client";
 
-import { RoadFeature, RoadProperties } from "@/registry/map-with-segments/lib/roads";
+import {
+  RoadFeature,
+  RoadProperties,
+} from "@/registry/map-with-segments/lib/roads";
 import { Stroke, Style } from "ol/style";
 import { Map, MapLayer, MapTooltip } from "@/registry/ol-map/map";
 import { GeoJSON } from "ol/format";
@@ -9,7 +12,9 @@ import { XYZ } from "ol/source";
 import { createDataLayer } from "@/registry/map-with-segments/lib/helpers";
 import { Geometry } from "ol/geom";
 import { View } from "ol";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { AnimatedLayer } from "./animated-layer";
+import VectorLayer from "ol/layer/Vector";
 
 type MapWithSegmentsProps = {
   accidents: unknown[];
@@ -41,6 +46,7 @@ export const MapWithSegments: React.FC<MapWithSegmentsProps> = ({
       url: "https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token=pk.eyJ1Ijoid2l6enk4NSIsImEiOiJjbHJ5NGx6dHQxNjZsMmpsejN2OXlzZjR6In0.kp6vK9Gb_gtFXSGGZ63CRw",
     }),
   });
+  const dashOffset = useRef<number>(0);
 
   const olRoads = formatRoads(roads);
 
@@ -53,7 +59,7 @@ export const MapWithSegments: React.FC<MapWithSegmentsProps> = ({
     return state === "AZ";
   });
 
-  const roadsLayer = createDataLayer(filteredRoads, "image", (feature) => {
+  const roadsLayer = createDataLayer(filteredRoads, "vector", (feature) => {
     const properties = feature.getProperties() as RoadProperties;
 
     const { type } = properties;
@@ -74,6 +80,8 @@ export const MapWithSegments: React.FC<MapWithSegmentsProps> = ({
     return new Style({
       stroke: new Stroke({
         color: determineStrokeColor(type),
+        lineDash: [4, 6],
+        lineDashOffset: dashOffset.current,
         width: 2,
       }),
     });
@@ -101,6 +109,14 @@ export const MapWithSegments: React.FC<MapWithSegmentsProps> = ({
     fitView();
   }, [fitView]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      dashOffset.current = (dashOffset.current + 1) % 20;
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <Map
       options={{
@@ -127,6 +143,7 @@ export const MapWithSegments: React.FC<MapWithSegmentsProps> = ({
       />
       <MapLayer layer={tileLayer} />
       <MapLayer layer={roadsLayer} />
+      <AnimatedLayer layer={roadsLayer as VectorLayer<any>} speed={1} />
     </Map>
   );
 };

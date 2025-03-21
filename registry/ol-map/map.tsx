@@ -20,7 +20,7 @@ export type MapActions = {
 
 export type MapStore = MapState & MapActions;
 
-const useMapStore = create<MapStore>((set) => ({
+export const useMapStore = create<MapStore>((set) => ({
   map: null,
   setMap: (map) => set({ map }),
 }));

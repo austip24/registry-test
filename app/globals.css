@@ -83,6 +83,46 @@
   }
 }
 
+@layer components {
+  /* Initialize the counter */
+  .steps {
+    counter-reset: step;
+  }
+
+  /* Create a relative container for each step */
+  .steps h3 {
+    @apply relative pl-12 pb-4 font-medium;
+    counter-increment: step;
+  }
+
+  /* Create the step number circle */
+  .steps h3::before {
+    @apply absolute left-0 top-0 flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background text-sm font-semibold;
+    content: counter(step, decimal);
+  }
+
+  /* Create the connecting line with 8px gap */
+  .steps h3:not(:last-child)::after {
+    @apply absolute bg-red-500;
+    content: "";
+    width: 1px;
+    /* Position the line with 8px gap from circle */
+    left: calc(1rem); /* 16px (half of circle width) + 4px (half of desired gap) */
+    top: calc(2rem + 6px); /* 32px (circle height) + 8px (gap) */
+    height: calc(100% + 1rem - 6px); /* Subtract the top gap to maintain spacing */
+  }
+
+  /* Style for step content */
+  .steps h3 + * {
+    @apply relative pl-12 pb-8;
+  }
+
+  /* Remove extra padding from the last step's content */
+  .steps h3:last-child + * {
+    @apply pb-0;
+  }
+}
+
 [data-rehype-pretty-code-fragment] {
   @apply relative text-white;
 }
@@ -133,4 +173,15 @@
 
 [data-rehype-pretty-code-title] + pre {
   @apply mt-2;
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

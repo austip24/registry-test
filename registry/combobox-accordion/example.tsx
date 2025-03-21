@@ -2,8 +2,16 @@ import { ComboboxAccordion } from "./components/combobox-accordion";
 
 const frameworks = [
   {
-    value: ["next.js", "react", "typescript"],
-    label: "Next.js",
+    value: "Next.js",
+    label: "React",
+  },
+  {
+    value: "Gatsby",
+    label: "React",
+  },
+  {
+    value: "Meta",
+    label: "React",
   },
   {
     value: "sveltekit",
