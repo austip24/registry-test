@@ -4,8 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm run registry:build && next build",
-    "start": "next start",
+    "build:dev": "npm run registry:build && next build",
+    "start:dev": "next start",
+    "build:prod": "npm run registry:build && next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
+    "start:prod": "node .next/standalone/server.js",
     "lint": "next lint",
     "registry:build": "shadcn build"
   },
